@@ -1,0 +1,7 @@
+#vscode
+**/.vscode
+#spyder
+**/.spyproject
+**/__pycache__
+#data
+**/data
