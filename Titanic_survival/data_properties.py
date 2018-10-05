@@ -94,7 +94,6 @@ def Multiple_attributes(data):
     plt.xlabel("survival")
     plt.ylabel("num")
     plt.title("Cabin and passengers")
-    plt.show()  
-    dsnajk 
+    plt.show() 
       
 
