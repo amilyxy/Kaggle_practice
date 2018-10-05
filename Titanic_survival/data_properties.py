@@ -95,5 +95,6 @@ def Multiple_attributes(data):
     plt.ylabel("num")
     plt.title("Cabin and passengers")
     plt.show()  
+    dsnajk 
       
 
