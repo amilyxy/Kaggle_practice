@@ -76,6 +76,7 @@ def Multiple_attributes(data):
     #堂兄妹和父母人数与获救的关系
     '''
     SibSp_group = data.groupby(['SibSp', 'Survived'])
+    # 变量SibSp_group是一个GroupBy对象 只是含有data的分组键的中间数据
     df = pd.DataFrame(SibSp_group.count()['PassengerId'])
     print(df)
     parch_group = data_train.groupby(['Parch','Survived'])
@@ -84,9 +85,10 @@ def Multiple_attributes(data):
     '''
     #ticket和船舱与获救的关系 
     # Cabin = data.Cabin.value_counts()  #count() 只有204个已知船舱 第一步可先忽略
+    # data.Survived[pd.notnull(data.Cabin)] 其中[]里面为index
     Survived_cabin = data.Survived[pd.notnull(data.Cabin)].value_counts()
-    Unsurvived_cabin = data.Survived[pd.isnull(data.Cabin)].value_counts()
-    Cabin = pd.DataFrame({'Survived_cabin': Survived_cabin, 'Unsurvived_cabin': Unsurvived_cabin})  #.transpose()
+    Survived_nocabin = data.Survived[pd.isnull(data.Cabin)].value_counts()
+    Cabin = pd.DataFrame({'Survived_cabin': Survived_cabin, 'Survived_nocabin': Survived_nocabin})  #.transpose()
     Cabin.plot(kind = 'bar', stacked = True)
     plt.grid(b = True, axis = 'y')
     plt.xlabel("survival")
