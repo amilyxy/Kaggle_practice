@@ -55,8 +55,9 @@ def data_dummies(data):
 # 归一化数据
 def data_scaling(data):
     scaler = preprocessing.StandardScaler()
-    data.drop(data.columns['Age', 'Fare'], axis = 1, inplace = True)
-    data['Age_Scaled'] = scaler.fit(data.Age[:, np.newaxis])
-    data['Fare_scaled'] = scaler.fit(data.Fare[:, np.newaxis])
+    # data.drop(['Age', 'Fare'], axis = 1, inplace = True)
+    # fit/fit_tra 需要的是二维np 
+    data['Age'] = scaler.fit_transform(data.Age[:, np.newaxis])
+    data['Fare'] = scaler.fit_transform(data.Fare[:, np.newaxis])
     return data
     
