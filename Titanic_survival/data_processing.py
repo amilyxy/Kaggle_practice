@@ -60,4 +60,12 @@ def data_scaling(data):
     data['Age'] = scaler.fit_transform(data.Age[:, np.newaxis])
     data['Fare'] = scaler.fit_transform(data.Fare[:, np.newaxis])
     return data
+
+def test_data_processing(data, y, rfr):
+    data.loc[data.Fare,isnull(), 'Fare'] = 0
+    set_Cabin_type(data)
+    data_dummies(data)
+
+
+
     
