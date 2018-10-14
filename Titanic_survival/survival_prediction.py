@@ -32,6 +32,7 @@ data_train_pocessing = data_processing.set_Cabin_type(data_train_pocessing)
 
 # 特征因子化 此处设置了inplace = True
 data_train_pocessing = data_processing.data_dummies(data_train_pocessing)
+# data_train_pocessing, age_scale_param, fare_scale_param = data_processing.data_scaling(data_train_pocessing)
 data_train_pocessing = data_processing.data_scaling(data_train_pocessing)
 
 '''
@@ -41,14 +42,18 @@ data_train_pocessing = data_processing.data_scaling(data_train_pocessing)
 # train_input = data_train_pocessing.filter(regex='Survived|Age|SibSp|Parch|Fare|Cabin_.*|Embarked_.*|Sex_.*|Pclass_.*')
 # A DataFrame with mixed type columns will return Object types
 train_input = data_train_pocessing.iloc[:, 1:].values
-y = train_input[:, 1:]
-X = train_input[:, 0]
+X = train_input[:, 1:]
+y = train_input[:, 0]
 logr = linear_model.LogisticRegression(C = 1.0, penalty = 'l1', tol = 1e-6)
 logr.fit(X, y)
 
 # 归一化测试集数据
-test_input, y_true= data_train_pocessing.test_data_procesing(test_data, y_, rfr)
+test_input, y_true= data_processing.test_data_processing(data_test, y_, rfr)
+# test_input, y_true= data_processing.test_data_processing(data_test, y_, rfr, age_scale_param, fare_scale_param)
 
+y_pred = logr.predict(test_input)
+result = pd.DataFrame({'PassengerId': data_test['PassengerId'], 'Survived': y_pred})
+result.to_csv("./data/test_pred.csv")
 '''
 def main(argv = None):
     data_train_pocessing = data_process(data_train)

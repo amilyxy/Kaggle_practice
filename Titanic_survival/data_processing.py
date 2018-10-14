@@ -11,27 +11,31 @@ import pandas as pd
 import numpy as np
 
 #使用RandomForestClassifier 填补缺失年龄属性
-def set_missingAge(data):
+def set_missingAge(data, label = "train", rfr = []):
     #如我想查看Age为nan是不是Cabin一定为nan
     #data_train.Cabin[pd.isnull(data_train.Age)].count()
     # 把已知的数据类型特征取出丢进Random Forest Regressor
     # data = data.copy()
     age_df = data[['Age', 'Fare', 'Parch', 'SibSp', 'Pclass']]
     #乘客分为已知年龄和未知年龄两部分
-    know_age = age_df[age_df.Age.notnull()].as_matrix()
-    unknow_age = age_df[age_df.Age.isnull()].as_matrix()
-    # y - 目标年龄
-    y = know_age[:, 0]
-    # x - 特征属性值
-    X = know_age[:, 1:]
-    # fit到RandomForestRegressor之中
-    rfr = RandomForestRegressor(random_state = 0, n_estimators = 2000, n_jobs = -1)
-    rfr.fit(X, y)
+    unknow_age = age_df[age_df.Age.isnull()].values
+    if label == "train":
+        know_age = age_df[age_df.Age.notnull()].values
+        # y - 目标年龄
+        y = know_age[:, 0]
+        # x - 特征属性值
+        X = know_age[:, 1:]
+        # fit到RandomForestRegressor之中
+        rfr = RandomForestRegressor(random_state = 0, n_estimators = 2000, n_jobs = -1)
+        rfr.fit(X, y)
     # 用得到的模型进行未知年龄结果预测
-    predictedAge = rfr.predict(unknow_age[:, 1::])
+    predictedAge = rfr.predict(unknow_age[:, 1:])
     # 用得到的预测结果填补原缺失数据 df.loc(行标签, 列标签)
     data.loc[(data.Age.isnull()), 'Age'] = predictedAge
-    return data, rfr
+    if label == "train":
+        return data, rfr
+    else:
+        return data
 
 def set_Cabin_type(data):
     # data = data.copy()
@@ -61,10 +65,33 @@ def data_scaling(data):
     data['Fare'] = scaler.fit_transform(data.Fare[:, np.newaxis])
     return data
 
+''' 测试代码
+def data_scaling(data, label = "train", age_scale_param = "", fare_scale_param = ""):
+    # data.drop(['Age', 'Fare'], axis = 1, inplace = True)
+    scaler = preprocessing.StandardScaler()
+    # fit/fit_tra 需要的是二维np 
+    if label == "train":
+        age_scale_param = scaler.fit(data.Age[:, np.newaxis])
+        fare_scale_param = scaler.fit(data.Fare[:, np.newaxis])
+    data['Age'] = scaler.fit_transform(data.Age[:, np.newaxis], age_scale_param)
+    data['Fare'] = scaler.fit_transform(data.Fare[:, np.newaxis], fare_scale_param)
+    if label == "train":
+        return data, age_scale_param, fare_scale_param
+    else:
+        return data
+'''
+
+# def test_data_processing(data, y, rfr, age_scale_param, fare_scale_param):
 def test_data_processing(data, y, rfr):
-    data.loc[data.Fare,isnull(), 'Fare'] = 0
-    set_Cabin_type(data)
-    data_dummies(data)
+    data.loc[data.Fare.isnull(), 'Fare'] = 0
+    data = set_missingAge(data, "test", rfr)
+    data = set_Cabin_type(data)
+    data = data_dummies(data)
+    # data = data_scaling(data, "test", age_scale_param, fare_scale_param)
+    data = data_scaling(data)
+    y_true = y.values[:, 1]
+    data = data.values[:, 1:]
+    return data, y_true
 
 
 
