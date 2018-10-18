@@ -37,6 +37,9 @@ def set_missingAge(data, label = "train", rfr = []):
     else:
         return data
 
+# 随机森林方法可能一般化，考虑到生存概率可能会偏向老人与小孩，所以make some changes
+
+
 def set_Cabin_type(data):
     # data = data.copy()
     data.loc[data.Cabin.notnull(), 'Cabin'] = 'Yes'

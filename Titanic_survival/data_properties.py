@@ -64,12 +64,12 @@ def Multiple_attributes(data):
     plt.show()
     #性别与获救的关系
     # plt.subplot2grid((2, 3), (0, 1))
-    male = data.Survived[data.Sex == 'male'].value_counts()
-    female = data.Survived[data.Sex == 'female'].value_counts()
-    genderp = pd.DataFrame({'male': male, 'female': female})
+    Survived = data.Sex[data.Survived == 1].value_counts()
+    Unsurvived = data.Sex[data.Survived == 0].value_counts()  
+    genderp = pd.DataFrame({'Survived': Survived, 'Unsurvived': Unsurvived})
     genderp.plot(kind = 'bar', stacked = True)
     plt.grid(b = True, axis = 'y')
-    plt.xlabel("survival")
+    plt.xlabel("Sex")
     plt.ylabel("num")
     plt.title("gender and passengers")
     plt.show()
@@ -86,12 +86,24 @@ def Multiple_attributes(data):
     #ticket和船舱与获救的关系 
     # Cabin = data.Cabin.value_counts()  #count() 只有204个已知船舱 第一步可先忽略
     # data.Survived[pd.notnull(data.Cabin)] 其中[]里面为index
-    Survived_cabin = data.Survived[pd.notnull(data.Cabin)].value_counts()
-    Survived_nocabin = data.Survived[pd.isnull(data.Cabin)].value_counts()
-    Cabin = pd.DataFrame({'Survived_cabin': Survived_cabin, 'Survived_nocabin': Survived_nocabin})  #.transpose()
+    Survived = data.Cabin.notnull()[data.Survived == 1].value_counts()
+    Unsurvived = data.Cabin.notnull()[data.Survived == 0].value_counts()
+    Cabin = pd.DataFrame({'Survived': Survived, 'Unsurvived': Unsurvived})  #.transpose()
     Cabin.plot(kind = 'bar', stacked = True)
     plt.grid(b = True, axis = 'y')
-    plt.xlabel("survival")
+    plt.xlabel("Cabin")
     plt.ylabel("num")
     plt.title("Cabin and passengers")
     plt.show() 
+
+    #登港港口与获救的关系
+    Survived = data.Embarked[data.Survived == 1].value_counts()
+    Unsurvived = data.Embarked[data.Survived == 0].value_counts()
+    Embarked = pd.DataFrame({'Survived': Survived, 'Unsurvived': Unsurvived})
+    Embarked.plot(kind = 'bar', stacked = True)
+    plt.grid(b = True, axis = 'y')
+    plt.xlabel("Embarked")
+    plt.ylabel("num")
+    plt.title("Embarked and passengers")
+    plt.show() 
+    
