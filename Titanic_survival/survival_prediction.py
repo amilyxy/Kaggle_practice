@@ -46,31 +46,28 @@ data_train_pocessing = data_processing.data_scaling(data_train_pocessing)
 # 用正则取出属性值 因为不知道具体的列值
 # train_input = data_train_pocessing.filter(regex='Survived|Age|SibSp|Parch|Fare|Cabin_.*|Embarked_.*|Sex_.*|Pclass_.*')
 # df.values A DataFrame with mixed type columns will return Object types
-# 选择使用特征
-regex='Survived|Age|SibSp|Parch|Fare_.*|Embarked_.*|Sex_.*|Pclass_.*'
 train_data, cv_data  = train_test_split(data_train_pocessing, test_size = 0.3, random_state = 0)
-train_input = train_data.filter(regex = regex).values
-# train_input = data_train_pocessing.filter(regex = regex).values
+train_input = train_data.iloc[:, 1:].values
 
 X_train = train_input[:, 1:]
 y_train = train_input[:, 0]
-# 逻辑回归模型      
+# 逻辑回归模型
 logr = linear_model.LogisticRegression(C = 1.0, penalty = 'l1', tol = 1e-6)
 logr.fit(X_train, y_train)
 # 逻辑回归查看每个sample的feature weight， 正相关 or 负相关
-# logr_weight = pd.DataFrame({"columns":list(train_data.columns)[2:], "coef":list(logr.coef_.T)})
+logr_weight = pd.DataFrame({"columns":list(train_data.columns)[2:], "coef":list(logr.coef_.T)})
 
 # 输出5次交叉验证score
-print (cross_val_score(logr, X_train, y_train, cv = 5))
+# print (cross_val_score(logr, X, y, cv = 5))
 
 '''
 对cross validation数据进行预测
 '''
-# origin_data = pd.read_csv("./data/train.csv")
-# cv_input = cv_data.filter(regex = regex).values
-# y_cvpred = logr.predict(cv_input[:, 1:])
-# # 预测错误示例信息
-# bad_cases = origin_data.loc[origin_data.PassengerId.isin(cv_data[y_cvpred != cv_input[:, 0]].PassengerId.values)]
+origin_data = pd.read_csv("./data/train.csv")
+cv_input = cv_data.iloc[:, 1:].values
+y_cvpred = logr.predict(cv_input[:, 1:])
+# 预测错误示例信息
+bad_cases = origin_data.loc[origin_data.PassengerId.isin(cv_data[y_cvpred != cv_input[:, 0]].PassengerId.values)]
 
 '''
 测试集验证
