@@ -12,29 +12,31 @@ import pandas as pd
 def Single_attributes(data):
     fig = plt.figure()
     fig.set(alpha = 0.2)
-    #the rescued number of pople
-    plt.subplot2grid((2, 4), (0, 0))
+    #the rescued number of people
+    plt.subplot2grid((2, 2), (0, 0))
     data.Survived.value_counts().plot(kind = "bar", color = 'lightskyblue') #柱状图
     plt.title("1: survived people")
     plt.ylabel("num")
     #the distribution of passenger class 
-    plt.subplot2grid((2,4), (0, 1))
+    plt.subplot2grid((2,2), (0, 1))
     data.Pclass.value_counts().plot(kind = "bar", color = 'lightskyblue')
     plt.title("the class of passengers")
     plt.ylabel("num")
     #the gender of passengers
-    plt.subplot2grid((2,4), (0, 2))
+    plt.subplot2grid((2,2), (1, 0))
     data.Sex.value_counts().plot(kind = "bar", color = 'lightskyblue')
     plt.title("the gender of passengers")
     plt.ylabel("num")    
     #the distribution of passengers'age
-    plt.subplot2grid((2, 4), (0, 3))
+    plt.subplot2grid((2, 2), (1, 1))
     plt.scatter(data.Survived, data.Age)
     plt.ylabel("age")
     plt.grid(b = True, which = "major", axis = 'y')
     plt.title("the distribution of passengers'age")
+
+    plt.figure()
     #各个船仓的乘客年龄分布
-    plt.subplot2grid((2, 4), (1, 0), colspan = 3)
+    plt.subplot2grid((2, 1), (0, 0), colspan = 2)
     data.Age[data.Pclass == 1].plot(kind = 'kde')
     data.Age[data.Pclass == 2].plot(kind = 'kde')
     data.Age[data.Pclass == 3].plot(kind = 'kde')
@@ -43,7 +45,7 @@ def Single_attributes(data):
     plt.title("the pass_age of each Pclass")
     plt.legend(('一等舱', '二等舱', '三等舱'), loc = 'best')
     #the passengers'age of each port of embarkation
-    plt.subplot2grid((2, 4), (1, 3))
+    plt.subplot2grid((2, 2), (1, 0))
     data.Embarked.value_counts().plot(kind = "bar", color = "lightskyblue")
     plt.xlabel("Port")
     plt.ylabel("num")
@@ -76,7 +78,7 @@ def Multiple_attributes(data):
     #堂兄妹和父母人数与获救的关系
     '''
     SibSp_group = data.groupby(['SibSp', 'Survived'])
-    # 变量SibSp_group是一个GroupBy对象 只是含有data的分组键的中间数据
+    # 变量SibSp_group是一个GroupBy对象 只是含有data的分组键['SibSp', 'Survived']的中间数据
     df = pd.DataFrame(SibSp_group.count()['PassengerId'])
     print(df)
     parch_group = data_train.groupby(['Parch','Survived'])
